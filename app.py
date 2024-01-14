@@ -67,6 +67,12 @@ if build_scatter:  # se o botão 'build_scatter' for clicado
     # exibir um gráfico Plotly interativo
     st.plotly_chart(fig, use_container_width=True)
 
+fig = make_subplots(
+    rows=3, cols=1,
+    shared_xaxes=True,
+    vertical_spacing=0.03,
+    specs=[{"type": "table"}]
+)
 
 fig.add_trace(
     go.Table(
