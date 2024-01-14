@@ -36,7 +36,7 @@ st.header('Visualização de dados de anúncio de vendas de carros')
 #     st.plotly_chart(fig, use_container_width=True)
 
 # criar um botão
-build_histogram = st.checkbox('Criar um histograma')
+build_histogram = st.checkbox('Criar um histograma - teste')
 
 if build_histogram:  # se o botão 'build_histogram' for clicado
     # escrever uma mensagem
@@ -50,7 +50,7 @@ if build_histogram:  # se o botão 'build_histogram' for clicado
     st.plotly_chart(fig, use_container_width=True)
 
 # criar um botão
-build_scatter = st.checkbox('Criar um gráfico de dispersão')
+build_scatter = st.checkbox('Criar um gráfico de dispersão - teste')
 
 if build_scatter:  # se o botão 'build_scatter' for clicado
     # escrever uma mensagem
