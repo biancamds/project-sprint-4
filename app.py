@@ -1,9 +1,6 @@
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import streamlit as st
-import re
 
 
 # função para ler e armazenar em cache o arquivo CSV
@@ -36,12 +33,16 @@ st.header('Visualização de dados de anúncio de vendas de carros')
 # criar uma caixa de seleção
 table_checkbox = st.checkbox('Incluir fabricantes com menos de 1000 anúncios')
 
+
 if table_checkbox:  # se a caixa for selecionada
+
+    #inserir título na página
+    st.markdown('##### Dados gerais')
 
     # exibir a tabela com o intervalo de fabricantes geral (inclui fabricantes com menos de 1000 anúncios)
     # deixar o texto 'Tabela geral' em negrito
-    st.markdown('**Tabela geral**', unsafe_allow_html=True)
-    st.write(data_selected)
+    st.markdown('**Tabela**', unsafe_allow_html=True)
+    st.write(data_adjusted.iloc[:, :11])
 
     # criar gráfico
     # definir paleta de cores para o gráfico
@@ -49,14 +50,34 @@ if table_checkbox:  # se a caixa for selecionada
         data_counts['type'].unique())]
 
     # criar o gráfico de barras empilhadas da quantidade de tipos por fabricante
-    fig = px.bar(data_counts, x="manufacturer", y="count", color="type",
-                 title="Contagem geral de tipos por fabricante",
+    fig = px.bar(data_counts, x='manufacturer', y='count', color='type',
+                 title='Contagem geral de tipos por fabricante',
                  color_discrete_sequence=pastel_colors)  # utilizar paleta de cores estabelecida
 
-    # exibir o gráfico no Streamlit
+    # exibir o gráfico de barras no Streamlit
+    st.plotly_chart(fig)
+
+    # criar o gráfico histograma da condição do veículo por ano do modelo
+    fig = px.histogram(data_adjusted, x='model_year', color='condition',
+                       title='Histograma de condição vs. ano do modelo',
+                       color_discrete_sequence=pastel_colors)
+    
+    # exibir o gráfico histograma no Streamlit
+    st.plotly_chart(fig)
+
+    # criar o gráfico de dispersão do preço do veículo por ano do modelo separado pelas categorias de transmissão
+    fig = px.scatter(data_adjusted, x='model_year', y='price', color='transmission',
+                       title='Gráfico de dispersão do preço do veículo vs. ano do modelo separado por categorias de transmissão',
+                       color_discrete_sequence=pastel_colors)
+    
+    # exibir o gráfico de dispersão no Streamlit
     st.plotly_chart(fig)
 
 else:
+
+    #inserir título na página
+    st.markdown('##### Dados filtrados')
+
     # filtrar tabela
     # agrupar os dados por fabricante e calcular a soma das contagens para cada fabricante
     manufacturer_grouped = data_counts.groupby('manufacturer')[
@@ -84,7 +105,7 @@ else:
 
     # criar tabela filtrada
     # Deixa o texto 'Tabela geral' em negrito
-    st.markdown('**Tabela filtrada**', unsafe_allow_html=True)
+    st.markdown('**Tabela**', unsafe_allow_html=True)
     st.write(data_filter.iloc[:, :11])
 
     # definir paleta de cores para o gráfico
@@ -92,66 +113,25 @@ else:
         data_counts_filter['type'].unique())]
 
     # criar o gráfico de barras empilhadas da quantidade de tipos por fabricante
-    fig = px.bar(data_counts_filter, x="manufacturer", y="count", color="type",
-                 title="Contagem filtrada de tipos por fabricante",
+    fig = px.bar(data_counts_filter, x='manufacturer', y='count', color='type',
+                 title='Contagem filtrada de tipos por fabricante',
                  color_discrete_sequence=pastel_colors)  # utilizar paleta de cores estabelecida
 
-    # exibir o gráfico no Streamlit
+    # exibir o gráfico de barras no Streamlit
     st.plotly_chart(fig)
 
+    # criar o gráfico histograma da condição do veículo por ano do modelo
+    fig = px.histogram(data_filter, x='model_year', color='condition',
+                       title='Histograma de condição vs. ano do modelo',
+                       color_discrete_sequence=pastel_colors)
+    
+    # exibir o gráfico histograma no Streamlit
+    st.plotly_chart(fig)
 
-# # hist_button = st.button('Criar histograma')  # criar um botão
-
-
-# # if hist_button:  # se o botão for clicado
-# #     # escrever uma mensagem
-# #     st.write(
-# #         'Criando um histograma para o conjunto de dados de anúncios de vendas de carros')
-
-# #     # criar um histograma
-# #     fig = px.histogram(car_data, x="odometer")
-
-# #     # exibir um gráfico Plotly interativo
-# #     st.plotly_chart(fig, use_container_width=True)
-
-
-# # scatter_button = st.button('Criar gráfico de dispersão')  # criar um botão
-
-# # if scatter_button:  # se o botão for clicado
-# #     # escrever uma mensagem
-# #     st.write(
-# #         'Criando um gráfico de dispersão para o conjunto de dados de anúncios de vendas de carros')
-
-# #     # criar um gráfico de dispersão
-# #     fig = px.scatter(car_data, y="odometer", x="model_year")
-
-# #     # exibir um gráfico Plotly interativo
-# #     st.plotly_chart(fig, use_container_width=True)
-
-# # # criar um botão
-# # build_histogram = st.checkbox('Criar um histograma - teste')
-
-# # if build_histogram:  # se o botão 'build_histogram' for clicado
-# #     # escrever uma mensagem
-# #     st.write(
-# #         'Criando um histograma para o conjunto de dados de anúncios de vendas de carros')
-
-# #     # criar um histograma
-# #     fig = px.histogram(car_data, x="odometer")
-
-# #     # exibir um gráfico Plotly interativo
-# #     st.plotly_chcheckboxart(fig, use_container_width=True)
-
-# # # criar um botão
-# # build_scatter = st.('Criar um gráfico de dispersão - teste')
-
-# # if build_scatter:  # se o botão 'build_scatter' for clicado
-# #     # escrever uma mensagem
-# #     st.write(
-# #         'Criando um gráfico de dispersão para o conjunto de dados de anúncios de vendas de carros')
-
-# #     # criar um gráfico de dispersão
-# #     fig = px.scatter(car_data, y="price", x="model_year")
-
-# #     # exibir um gráfico Plotly interativo
-# #     st.plotly_chart(fig, use_container_width=True)
+    # criar o gráfico de dispersão do preço do veículo por ano do modelo separado pelas categorias de transmissão
+    fig = px.scatter(data_filter, x='model_year', y='price', color='transmission',
+                       title='Gráfico de dispersão do preço do veículo vs. ano do modelo separado por categorias de transmissão',
+                       color_discrete_sequence=pastel_colors)
+    
+    # exibir o gráfico de dispersão no Streamlit
+    st.plotly_chart(fig)
