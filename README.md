@@ -12,7 +12,7 @@ _pip install pandas plotly streamlit_
 
 Execute o aplicativo Streamlit com o seguinte comando:
 
-_streamlit run seu_script.py_
+_streamlit run app.py_
 
 O aplicativo será executado no navegador e você poderá interagir com as visualizações.
 
